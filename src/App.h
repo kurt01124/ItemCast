@@ -24,9 +24,6 @@ public:
 private:
     // 콜백 핸들러
     void onEnableChanged(bool enabled);
-    void onWarcraft3OnlyChanged(bool enabled);
-    void onSaveRequested();
-    void onMinimizeToTray();
     void onKeyChanged(ItemSlot slot, DWORD vkCode);
     void onTrayShow();
     void onTrayToggle();

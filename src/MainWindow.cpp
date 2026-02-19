@@ -29,17 +29,12 @@ MainWindow::MainWindow()
     , m_btnHoverPen(nullptr)
     , m_colorText(Theme::TEXT_COLOR)
     , m_colorLabelGray(Theme::LABEL_GRAY)
-    , m_hoveredBtn(-1)
     , m_checkEnable(nullptr)
-    , m_checkWar3Only(nullptr)
-    , m_btnSave(nullptr)
-    , m_btnTray(nullptr)
     , m_waitingForKey(false)
     , m_waitingSlot(ItemSlot::Slot1)
     , m_waitingForToggleKey(false)
     , m_toggleKeyVk(VK_F5)
     , m_btnToggleKey(nullptr)
-    , m_labelToggleKey(nullptr)
 {
     for (int i = 0; i < 6; ++i) {
         m_btnSlots[i] = nullptr;

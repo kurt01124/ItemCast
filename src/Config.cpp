@@ -8,8 +8,6 @@ using json = nlohmann::json;
 Config::Config()
     : m_toggleKey(VK_F5)
     , m_enabled(true)
-    , m_warcraft3Only(true)
-    , m_startMinimized(false)
 {
     for (int i = 0; i < 6; ++i) {
         m_slotKeys[i] = 0;
@@ -78,12 +76,6 @@ bool Config::load() {
         if (j.contains("enabled") && j["enabled"].is_boolean()) {
             m_enabled = j["enabled"].get<bool>();
         }
-        if (j.contains("warcraft3Only") && j["warcraft3Only"].is_boolean()) {
-            m_warcraft3Only = j["warcraft3Only"].get<bool>();
-        }
-        if (j.contains("startMinimized") && j["startMinimized"].is_boolean()) {
-            m_startMinimized = j["startMinimized"].get<bool>();
-        }
         if (j.contains("toggleKey") && j["toggleKey"].is_number()) {
             m_toggleKey = j["toggleKey"].get<DWORD>();
         }
@@ -107,8 +99,6 @@ bool Config::save() {
 
         // 설정 저장
         j["enabled"] = m_enabled;
-        j["warcraft3Only"] = m_warcraft3Only;
-        j["startMinimized"] = m_startMinimized;
         j["toggleKey"] = m_toggleKey;
 
         // 파일 쓰기

@@ -1,12 +1,10 @@
 #include "KeyboardHook.h"
-#include <algorithm>
 
 KeyboardHook* KeyboardHook::s_instance = nullptr;
 
 KeyboardHook::KeyboardHook()
     : m_hookHandle(nullptr)
     , m_enabled(false)
-    , m_warcraft3Only(true)
     , m_keyWaitMode(false)
     , m_mapper(nullptr)
     , m_keyCallback(nullptr)
@@ -41,43 +39,6 @@ void KeyboardHook::uninstall() {
         UnhookWindowsHookEx(m_hookHandle);
         m_hookHandle = nullptr;
     }
-}
-
-bool KeyboardHook::isWarcraft3Active() {
-    HWND foreground = GetForegroundWindow();
-    if (foreground == nullptr) {
-        return false;
-    }
-
-    wchar_t className[256] = { 0 };
-    wchar_t windowTitle[256] = { 0 };
-
-    GetClassNameW(foreground, className, 256);
-    GetWindowTextW(foreground, windowTitle, 256);
-
-    // 워크래프트3 클래스 이름 또는 창 제목으로 감지
-    // Warcraft III 클래스: "Warcraft III"
-    // Warcraft III Reforged 클래스: "OsWindow"
-    std::wstring classStr(className);
-    std::wstring titleStr(windowTitle);
-
-    // 대소문자 무시 비교를 위해 소문자로 변환
-    std::transform(classStr.begin(), classStr.end(), classStr.begin(), ::towlower);
-    std::transform(titleStr.begin(), titleStr.end(), titleStr.begin(), ::towlower);
-
-    // Warcraft III 감지
-    if (classStr.find(L"warcraft") != std::wstring::npos) {
-        return true;
-    }
-    if (titleStr.find(L"warcraft") != std::wstring::npos) {
-        return true;
-    }
-    // war3.exe 창 제목
-    if (titleStr.find(L"war3") != std::wstring::npos) {
-        return true;
-    }
-
-    return false;
 }
 
 LRESULT CALLBACK KeyboardHook::lowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {

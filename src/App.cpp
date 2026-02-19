@@ -31,7 +31,6 @@ bool App::initialize(HINSTANCE hInstance) {
 
     // 키보드 훅에 매퍼 연결
     m_keyboardHook->setKeyMapper(m_keyMapper.get());
-    m_keyboardHook->setWarcraft3Only(m_config->isWarcraft3Only());
 
     // 설정을 매퍼에 적용
     m_config->applyToMapper(*m_keyMapper);
@@ -47,9 +46,6 @@ bool App::initialize(HINSTANCE hInstance) {
 
     // 콜백 설정
     m_mainWindow->setEnableCallback([this](bool enabled) { onEnableChanged(enabled); });
-    m_mainWindow->setWarcraft3OnlyCallback([this](bool enabled) { onWarcraft3OnlyChanged(enabled); });
-    m_mainWindow->setSaveCallback([this]() { onSaveRequested(); });
-    m_mainWindow->setMinimizeCallback([this]() { onMinimizeToTray(); });
     m_mainWindow->setKeyChangeCallback([this](ItemSlot slot, DWORD vkCode) { onKeyChanged(slot, vkCode); });
     m_mainWindow->setToggleCallback([this]() { onToggleEnable(); });
     m_mainWindow->setToggleKeyChangeCallback([this](DWORD vkCode) {
@@ -89,10 +85,7 @@ bool App::initialize(HINSTANCE hInstance) {
     m_keyboardHook->setEnabled(m_config->isEnabled());
     m_trayIcon->setEnabled(m_config->isEnabled());
 
-    // 윈도우 표시 (시작 시 최소화가 아니면)
-    if (!m_config->isStartMinimized()) {
-        m_mainWindow->show();
-    }
+    m_mainWindow->show();
 
     m_running = true;
     return true;
@@ -125,27 +118,6 @@ void App::onEnableChanged(bool enabled) {
     m_keyboardHook->setEnabled(enabled);
     m_trayIcon->setEnabled(enabled);
     m_config->setEnabled(enabled);
-}
-
-void App::onWarcraft3OnlyChanged(bool enabled) {
-    m_keyboardHook->setWarcraft3Only(enabled);
-    m_config->setWarcraft3Only(enabled);
-}
-
-void App::onSaveRequested() {
-    // 현재 매핑을 Config에 저장
-    m_config->loadFromMapper(*m_keyMapper);
-    m_config->setEnabled(m_keyboardHook->isEnabled());
-
-    if (m_config->save()) {
-        MessageBoxW(m_mainWindow->getHandle(), L"설정이 저장되었습니다.", L"저장 완료", MB_ICONINFORMATION);
-    } else {
-        MessageBoxW(m_mainWindow->getHandle(), L"설정 저장에 실패했습니다.", L"오류", MB_ICONERROR);
-    }
-}
-
-void App::onMinimizeToTray() {
-    m_mainWindow->hide();
 }
 
 void App::onKeyChanged(ItemSlot slot, DWORD vkCode) {
@@ -188,7 +160,6 @@ void App::onKeyInput(DWORD vkCode, bool keyDown) {
 void App::applyConfig() {
     m_config->applyToMapper(*m_keyMapper);
     m_keyboardHook->setEnabled(m_config->isEnabled());
-    m_keyboardHook->setWarcraft3Only(m_config->isWarcraft3Only());
 }
 
 void App::updateUI() {
